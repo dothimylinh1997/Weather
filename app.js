@@ -11,21 +11,22 @@ const PORT = process.env.PORT || 5000; // process.env là 1 object chưa tất c
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 jsonwebtoken = require("jsonwebtoken");
-var allowCrossDomain = function(req,res,next){
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
 
-  next();
+    next();
 }
-app.use('/api',weatherRouter());
 app.use(allowCrossDomain);
+app.use('/api', weatherRouter());
+
 app.listen(PORT, function() {
-  console.log("Listening on " + PORT);
+    console.log("Listening on " + PORT);
 });
 
 app.get("/", (req, res) => {
-  res.send("listening on " + PORT);
+    res.send("listening on " + PORT);
 });
 
 // app.get("/weather", (req, res) => {

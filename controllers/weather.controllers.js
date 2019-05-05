@@ -21,6 +21,16 @@ function getAllWeather(req, res, next) {
     });
 }
 
+function updateWeather(req, res, next) {
+    var _id = req.params.id;
+    var weatherData = req.body;
+    weatherService.updateWeather(_id, weatherData).then(() => {
+        res.send(weatherData);
+    }).catch((err) => {
+        res.status(400).send(err);
+    });
+}
+
 function findCityByName(req, res) {
     const cityName = convert_cityname(req.params.cityname);
     console.log(cityName);
@@ -53,51 +63,47 @@ function getOneWeather(req, res, next) {
     })
 }
 
-function createWeather(req, res, next) {
-    var params = {
-        name: req.body.name,
-        description: req.body.description,
-        day: [{ dayName: req.body.dayName, temp: req.body.temp }],
-        time: req.body.time,
-        tempmax: req.body.tempmax,
-        tempmin: req.body.tempmin,
-        tempnow: req.body.tempnow,
-        humid: req.body.humid,
-        statenow: req.body.statenow,
-        uv: req.body.uv,
-        winspeed: req.body.winspeed
-    }
+// function createWeather(req, res, next) {
+//     var params = {
+//         name: req.body.name,
+//         description: req.body.description,
+//         day: [{ dayName: req.body.dayName, temp: req.body.temp }],
+//         time: req.body.time,
+//         tempmax: req.body.tempmax,
+//         tempmin: req.body.tempmin,
+//         tempnow: req.body.tempnow,
+//         humid: req.body.humid,
+//         statenow: req.body.statenow,
+//         uv: req.body.uv,
+//         winspeed: req.body.winspeed
+//     }
 
-    weatherService.createWeather(params, (err, response) => {
-        if (err) {
-            res.send(err);
+//     weatherService.createWeather(params, (err, response) => {
+//         if (err) {
+//             res.send(err);
+//         } else {
+//             res.send(response);
+//         }
+//     });
+// }
+
+function createWeather(req, res, next) {
+    weather.findOne({ name: req.body.name }).then((result) => {
+        if (!result) {
+            var newWeather = new weather(req.body);
+            newWeather.save().then((Weather) => {
+                res.send(Weather);
+            }).catch((err) => {
+                return res.send(err.message);
+            });
         } else {
-            res.send(response);
+            return res
+                .status(404)
+                .send({ message: "Thanh pho da ton tai. Kiem tra lai" });
         }
     });
 }
 
-function updateWeather(req, res, next) {
-    let params = {
-        name: req.body.name,
-        description: req.body.description,
-        day: [{ dayName: req.body.dayName, temp: req.body.temp }],
-        time: req.body.time,
-        tempmax: req.body.tempmax,
-        tempmin: req.body.tempmin,
-        tempnow: req.body.tempnow,
-        humid: req.body.humid,
-        statenow: req.body.statenow,
-        uv: req.body.uv,
-        winspeed: req.body.winspeed
-    }
-
-    weatherService.updateWeather(params).then((response) => {
-        res.send(response);
-    }).catch((err) => {
-        res.status(err.statusCode).send(err);
-    })
-}
 
 function deleteWeather(req, res, next) {
     let id = req.params.id;
