@@ -92,11 +92,17 @@ function createWeather(req, res, next) {
         if (!result) {
             var newWeather = new weather(req.body);
             newWeather.save().then((Weather) => {
-                res.send(Weather);
+                console.log(Weather);
+
+                return res.send(Weather);
             }).catch((err) => {
+                console.log('catch');
+
                 return res.send(err.message);
             });
         } else {
+            console.log('server');
+
             return res
                 .status(404)
                 .send({ message: "Thanh pho da ton tai. Kiem tra lai" });
